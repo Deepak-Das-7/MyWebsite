@@ -1,0 +1,35 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header,
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1em 0;
+}
+
+main {
+    padding: 2em;
+}
+
+.portfolio-item {
+    margin-bottom: 2em;
+}
+
+.portfolio-item img {
+    max-width: 100%;
+    height: auto;
+}
+
+.portfolio-item h2 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.portfolio-item p {
+    margin-top: 0;
+}
