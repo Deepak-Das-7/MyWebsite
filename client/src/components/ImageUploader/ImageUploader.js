@@ -39,8 +39,6 @@ const ImageUploader = ({ onUpload }) => {
 
       try {
         const response = await axios.post(`${process.env.REACT_APP_API_URL}/upload`, { image: base64String });
-        const imageUrl = response.data.image; // Adjust this according to your backend response
-        // console.log("Image URL received:", imageUrl); // Debug line
 
         if (onUpload) onUpload(response.data); // Pass the entire response
       } catch (error) {
