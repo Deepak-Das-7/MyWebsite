@@ -10,6 +10,11 @@ const ImageUploader = ({ onUpload }) => {
     const file = event.target.files[0];
     if (!file) return;
 
+    if (file.size > 10 * 1024 * 1024) { // Check file size limit
+      console.error('File size exceeds limit');
+      return;
+    }
+
     setSelectedImage(file);
     setPreview(URL.createObjectURL(file));
 
@@ -39,8 +44,10 @@ const ImageUploader = ({ onUpload }) => {
 
       try {
         const response = await axios.post(`${process.env.REACT_APP_API_URL}/upload`, { image: base64String });
+        const imageUrl = response.data.image; // Ensure this matches your backend response
+        // console.log("Image URL received:", imageUrl); // Debug line
 
-        if (onUpload) onUpload(response.data); // Pass the entire response
+        if (onUpload) onUpload(imageUrl); // Pass the image URL
       } catch (error) {
         console.error('Upload error', error);
       }

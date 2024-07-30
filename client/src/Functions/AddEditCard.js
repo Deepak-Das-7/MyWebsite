@@ -35,8 +35,9 @@ const AddEditCard = ({ isOpen, onClose, onAdd, cardData }) => {
     };
 
     const handleImageUpload = (imageUrl) => {
-        setUploadedImageUrl(imageUrl.image);
-        setImage(imageUrl.image);
+        console.log("Image URL received in handler:", imageUrl); // Debug line
+        setUploadedImageUrl(imageUrl);
+        setImage(imageUrl);
     };
 
     return (
