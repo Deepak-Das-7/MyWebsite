@@ -16,7 +16,7 @@ const Admin = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/portfolio`);
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts`);
                 setCards(response.data);
             } catch (error) {
                 console.error('There was an error fetching the portfolio items!', error);
@@ -30,9 +30,9 @@ const Admin = () => {
     const handleAddOrEditCard = async (card) => {
         try {
             if (editingCard) {
-                await axios.put(`${process.env.REACT_APP_API_URL}/portfolio/${editingCard._id}`, card);
+                await axios.put(`${process.env.REACT_APP_API_URL}/posts/${editingCard._id}`, card);
             } else {
-                const response = await axios.post(`${process.env.REACT_APP_API_URL}/portfolio`, card);
+                const response = await axios.post(`${process.env.REACT_APP_API_URL}/posts`, card);
                 setCards([...cards, response.data]);
             }
             setUpdate(update + 1);
@@ -45,7 +45,7 @@ const Admin = () => {
     const handleDeleteCard = async (id) => {
         if (window.confirm('Are you sure you want to delete this card?')) {
             try {
-                await axios.delete(`${process.env.REACT_APP_API_URL}/portfolio/${id}`);
+                await axios.delete(`${process.env.REACT_APP_API_URL}/posts/${id}`);
                 setUpdate(update - 1);
             } catch (error) {
                 console.error(error);

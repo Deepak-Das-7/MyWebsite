@@ -6,20 +6,9 @@ const CommentController = require("../controllers/CommentController");
 const CategoryController = require("../controllers/CategoryController");
 const TagController = require("../controllers/TagController");
 
-const { getPortfolioItems, createPortfolioItem, editPortfolioItem, deletePortfolioItem } = require('../controllers/PortfolioController');
-const { getPhoto, createPhoto } = require('../controllers/Photo');
 
 const router = Router();
 
-// Portfolio routes
-router.get('/portfolio', getPortfolioItems);
-router.post('/portfolio', createPortfolioItem);
-router.put('/portfolio/:id', editPortfolioItem);
-router.delete('/portfolio/:id', deletePortfolioItem);
-
-// Photo routes
-router.get('/photo', getPhoto);
-router.post('/upload', createPhoto);
 
 // User routes
 router.post('/users', userController.createUser);

@@ -10,7 +10,7 @@ const CardContent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/portfolio`);
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts`);
                 setPortfolioItems(response.data);
             } catch (error) {
                 console.error('There was an error fetching the portfolio items!', error);
