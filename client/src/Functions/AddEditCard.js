@@ -9,22 +9,31 @@ const AddEditCard = ({ isOpen, onClose, onAdd, cardData }) => {
     const [title, setTitle] = useState('');
     const [image, setImage] = useState('');
     const [description, setDescription] = useState('');
-    const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
+    const [uploadedImageUrl, setUploadedImageUrl] = useState('');
+    const [validated, setValidated] = useState(false);
 
     useEffect(() => {
         if (cardData) {
             setTitle(cardData.title || '');
             setDescription(cardData.description || '');
             setImage(cardData.image || '');
+            setUploadedImageUrl(cardData.image || '');
         } else {
             setTitle('');
             setDescription('');
             setImage('');
+            setUploadedImageUrl('');
         }
     }, [cardData]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const form = e.currentTarget;
+        if (form.checkValidity() === false) {
+            e.stopPropagation();
+            setValidated(true);
+            return;
+        }
         try {
             const newCard = { title, description, image: uploadedImageUrl || image };
             await onAdd(newCard);
@@ -35,7 +44,6 @@ const AddEditCard = ({ isOpen, onClose, onAdd, cardData }) => {
     };
 
     const handleImageUpload = (imageUrl) => {
-        console.log("Image URL received in handler:", imageUrl); // Debug line
         setUploadedImageUrl(imageUrl);
         setImage(imageUrl);
     };
@@ -46,7 +54,7 @@ const AddEditCard = ({ isOpen, onClose, onAdd, cardData }) => {
                 <Modal.Title>{cardData ? 'Edit Card' : 'Add Card'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form onSubmit={handleSubmit}>
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
                     <Form.Group controlId="formTitle" className="mb-3">
                         <Form.Label>Title</Form.Label>
                         <Form.Control
@@ -55,19 +63,39 @@ const AddEditCard = ({ isOpen, onClose, onAdd, cardData }) => {
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="Enter the title"
                             required
+                            isInvalid={!title && validated}
                         />
+                        <Form.Control.Feedback type="invalid">
+                            Title is required.
+                        </Form.Control.Feedback>
                     </Form.Group>
+
                     <Form.Group controlId="formImage" className="mb-3">
                         <Form.Label>Image</Form.Label>
                         <ImageUploader onUpload={handleImageUpload} />
+                        {uploadedImageUrl && (
+                            <div className="mb-3">
+                                <img
+                                    src={uploadedImageUrl}
+                                    alt="Preview"
+                                    style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }}
+                                />
+                            </div>
+                        )}
                         <Form.Control
                             type="text"
                             value={image}
                             onChange={(e) => setImage(e.target.value)}
                             placeholder="Image URL"
-                            required
+                            hidden
                         />
+                        {!uploadedImageUrl && !image && validated && (
+                            <Form.Text className="text-danger">
+                                An image is required.
+                            </Form.Text>
+                        )}
                     </Form.Group>
+
                     <Form.Group controlId="formDescription" className="mb-3">
                         <Form.Label>Description</Form.Label>
                         <Form.Control
@@ -77,10 +105,15 @@ const AddEditCard = ({ isOpen, onClose, onAdd, cardData }) => {
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="Enter the description"
                             required
+                            isInvalid={!description && validated}
                         />
+                        <Form.Control.Feedback type="invalid">
+                            Description is required.
+                        </Form.Control.Feedback>
                     </Form.Group>
+
                     <Button variant="primary" type="submit" className="w-100">
-                        {cardData ? 'Edit Card' : 'Add Card'}
+                        {cardData ? 'Save Changes' : 'Add Card'}
                     </Button>
                 </Form>
             </Modal.Body>

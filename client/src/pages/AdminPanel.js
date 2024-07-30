@@ -69,8 +69,8 @@ const Admin = () => {
                 onClick={openModalForAdd}
                 className="position-fixed btn btn-primary"
                 style={{
-                    top: "0.3rem",
-                    right: '1rem',
+                    top: "4rem",
+                    right: '0.5rem',
                     zIndex: 1000,
                     backgroundColor: '#007bff',
                     color: '#fff',
@@ -80,7 +80,7 @@ const Admin = () => {
                     height: '3rem',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
                 }}
             >
                 <i className="bi bi-plus" style={{ fontSize: '3rem' }}></i>
