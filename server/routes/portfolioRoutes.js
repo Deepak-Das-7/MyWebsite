@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const portfolioController = require('../controllers/PortfolioController');
+const { getPortfolioItems, createPortfolioItem, editPortfolioItem, deletePortfolioItem } = require('../controllers/PortfolioController');
 const { getPhoto, createPhoto } = require('../controllers/Photo');
 
 const userController = require("../controllers/UserController");
@@ -11,12 +11,10 @@ const TagController = require("../controllers/TagController");
 const router = Router();
 
 // Portfolio routes
-router.get('/portfolio', portfolioController.getPortfolioItems);
-router.post('/portfolio', portfolioController.createPortfolioItem);
-router.get('/portfolio/:id', portfolioController.getPortfolioItemById);
-router.put('/portfolio/:id', portfolioController.editPortfolioItem);
-router.put('/portfolio/delete/:id', portfolioController.deletePortfolioItem);
-
+router.get('/portfolio', getPortfolioItems);
+router.post('/portfolio', createPortfolioItem);
+router.put('/portfolio/:id', editPortfolioItem);
+router.put('/portfolio/delete/:id', deletePortfolioItem);
 
 // Photo routes
 router.get('/photo', getPhoto);
