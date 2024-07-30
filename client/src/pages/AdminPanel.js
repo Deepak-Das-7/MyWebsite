@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import AddEditCard from '../Functions/AddEditCard';
-import { FetchPost } from '../Functions/FetchPost';
 import CardComponent from '../components/Card/Card2';
 import { Container, Row, Col } from 'react-bootstrap';
 
@@ -15,17 +14,21 @@ const Admin = () => {
     const [editingCard, setEditingCard] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const fetchData = async () => {
-        try {
-            setCards(await FetchPost());
-        } catch (error) {
-            console.error('Error fetching posts:', error);
-        }
-    };
+    const [update, setUpdate] = useState(0);
+
 
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/`);
+                setCards(response.data)
+            } catch (error) {
+                console.error('There was an error fetching the portfolio items!', error);
+                throw error;
+            }
+        };
         fetchData();
-    }, []);
+    }, [update]);
 
 
     const handleAddOrEditCard = async (card) => {
@@ -36,7 +39,7 @@ const Admin = () => {
                 const response = await axios.post(`${process.env.REACT_APP_API_URL}`, card);
                 setCards([...cards, response.data]);
             }
-            await fetchData();
+            setUpdate(update + 1);
             setIsModalOpen(false);
         } catch (error) {
             console.error(error);
@@ -47,7 +50,7 @@ const Admin = () => {
         if (window.confirm('Are you sure you want to delete this card?')) {
             try {
                 await axios.put(`${process.env.REACT_APP_API_URL}/delete/${id}`);
-                await fetchData();
+                setUpdate(update - 1);
             } catch (error) {
                 console.error(error);
             }
@@ -70,7 +73,7 @@ const Admin = () => {
                 onClick={openModalForAdd}
                 className="position-fixed btn btn-primary"
                 style={{
-                    top: '1rem',
+                    top: "0.3rem",
                     right: '1rem',
                     zIndex: 1000,
                     backgroundColor: '#007bff',
@@ -84,7 +87,7 @@ const Admin = () => {
                     justifyContent: 'center'
                 }}
             >
-                <i className="bi bi-plus" style={{ fontSize: '1.5rem' }}></i> {/* Bootstrap + icon */}
+                <i className="bi bi-plus" style={{ fontSize: '3rem' }}></i>
             </button>
             <Container>
                 <Row>

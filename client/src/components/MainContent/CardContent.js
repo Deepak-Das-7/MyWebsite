@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import CardComponent from '../Card/Card1';
-import { FetchPost } from '../../Functions/FetchPost';
+import axios from 'axios';
+
 
 const CardContent = () => {
     const [portfolioItems, setPortfolioItems] = useState([]);
 
     useEffect(() => {
-        FetchPost()
-            .then(data => setPortfolioItems(data))
-            .catch(error => console.error('Error fetching posts:', error));
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/`);
+                setPortfolioItems(response.data)
+            } catch (error) {
+                console.error('There was an error fetching the portfolio items!', error);
+                throw error;
+            }
+        };
+        fetchData();
     }, []);
 
     return (

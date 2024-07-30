@@ -3,11 +3,13 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ImageUploader from '../components/ImageUploader/ImageUploader';
 
 const AddEditCard = ({ isOpen, onClose, onAdd, cardData }) => {
     const [title, setTitle] = useState('');
-    const [image, setImage] = useState('https://picsum.photos/500');
+    const [image, setImage] = useState('');
     const [description, setDescription] = useState('');
+    const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
 
     useEffect(() => {
         if (cardData) {
@@ -17,19 +19,24 @@ const AddEditCard = ({ isOpen, onClose, onAdd, cardData }) => {
         } else {
             setTitle('');
             setDescription('');
-            setImage('https://picsum.photos/500');
+            setImage('');
         }
     }, [cardData]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const newCard = { title, description, image };
+            const newCard = { title, description, image: uploadedImageUrl || image };
             await onAdd(newCard);
             onClose();
         } catch (error) {
             console.error('Error adding card:', error);
         }
+    };
+
+    const handleImageUpload = (imageUrl) => {
+        setUploadedImageUrl(imageUrl.image);
+        setImage(imageUrl.image);
     };
 
     return (
@@ -50,12 +57,13 @@ const AddEditCard = ({ isOpen, onClose, onAdd, cardData }) => {
                         />
                     </Form.Group>
                     <Form.Group controlId="formImage" className="mb-3">
-                        <Form.Label>Image URL</Form.Label>
+                        <Form.Label>Image</Form.Label>
+                        <ImageUploader onUpload={handleImageUpload} />
                         <Form.Control
                             type="text"
                             value={image}
                             onChange={(e) => setImage(e.target.value)}
-                            placeholder="Enter the image URL"
+                            placeholder="Image URL"
                             required
                         />
                     </Form.Group>
