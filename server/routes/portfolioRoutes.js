@@ -1,12 +1,13 @@
 const { Router } = require('express');
-const { getPortfolioItems, createPortfolioItem, editPortfolioItem, deletePortfolioItem } = require('../controllers/PortfolioController');
-const { getPhoto, createPhoto } = require('../controllers/Photo');
 
 const userController = require("../controllers/UserController");
 const PostController = require("../controllers/PostController");
 const CommentController = require("../controllers/CommentController");
 const CategoryController = require("../controllers/CategoryController");
 const TagController = require("../controllers/TagController");
+
+const { getPortfolioItems, createPortfolioItem, editPortfolioItem, deletePortfolioItem } = require('../controllers/PortfolioController');
+const { getPhoto, createPhoto } = require('../controllers/Photo');
 
 const router = Router();
 
