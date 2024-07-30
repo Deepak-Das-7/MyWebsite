@@ -11,10 +11,10 @@ const TagController = require("../controllers/TagController");
 const router = Router();
 
 // Portfolio routes
-router.get('/', getPortfolioItems);
-router.post('/', createPortfolioItem);
-router.put('/edit/:id', editPortfolioItem);
-router.put('/delete/:id', deletePortfolioItem);
+router.get('/portfolio', getPortfolioItems);
+router.post('/portfolio', createPortfolioItem);
+router.put('/portfolio/:id', editPortfolioItem);
+router.delete('/portfolio/:id', deletePortfolioItem);
 
 // Photo routes
 router.get('/photo', getPhoto);
