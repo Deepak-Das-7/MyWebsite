@@ -1,6 +1,7 @@
 const { Router } = require('express');
-const { getPortfolioItems, createPortfolioItem, editPortfolioItem, deletePortfolioItem } = require('../controllers/PostController');
 const { getPhoto, createPhoto } = require('../controllers/Photo');
+const { getPortfolioItems, createPortfolioItem, deletePortfolioItem, editPortfolioItem } = require("../controllers/PortfolioController")
+
 
 const userController = require("../controllers/UserController");
 const PostController = require("../controllers/PostController");
