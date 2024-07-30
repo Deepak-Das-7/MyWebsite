@@ -2,34 +2,30 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import AddEditCard from '../Functions/AddEditCard';
 import CardComponent from '../components/Card/Card2';
-import { Container, Row, Col } from 'react-bootstrap';
-
-
+import { Container, Row, Col, Spinner } from 'react-bootstrap'; // Import Spinner component
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-
 
 const Admin = () => {
     const [cards, setCards] = useState([]);
     const [editingCard, setEditingCard] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
     const [update, setUpdate] = useState(0);
-
+    const [loading, setLoading] = useState(true); // Add loading state
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/`);
-                setCards(response.data)
+                setCards(response.data);
             } catch (error) {
                 console.error('There was an error fetching the portfolio items!', error);
-                throw error;
+            } finally {
+                setLoading(false); // Set loading to false when data is fetched or an error occurs
             }
         };
         fetchData();
     }, [update]);
-
 
     const handleAddOrEditCard = async (card) => {
         try {
@@ -68,7 +64,7 @@ const Admin = () => {
     };
 
     return (
-        <div >
+        <div>
             <button
                 onClick={openModalForAdd}
                 className="position-fixed btn btn-primary"
@@ -91,7 +87,12 @@ const Admin = () => {
             </button>
             <Container>
                 <Row>
-                    {cards.length > 0 ? (
+                    {loading ? (
+                        <Col xs={12} className="text-center">
+                            <Spinner animation="border" />
+                            <p>Loading...</p>
+                        </Col>
+                    ) : cards.length > 0 ? (
                         cards.map(item => (
                             <Col key={item._id} md={3} className="mb-3">
                                 <CardComponent
