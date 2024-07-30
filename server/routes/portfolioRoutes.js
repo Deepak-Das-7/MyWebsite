@@ -1,15 +1,60 @@
 const { Router } = require('express');
-const { getPortfolioItems, createPortfolioItem, editPortfolioItem, deletePortfolioItem } = require('../controllers/portfolioController');
-const { getPhoto, createPhoto } = require('../controllers/photo');
+const portfolioController = require('../controllers/PortfolioController');
+const { getPhoto, createPhoto } = require('../controllers/Photo');
+
+const userController = require("../controllers/UserController");
+const PostController = require("../controllers/PostController");
+const CommentController = require("../controllers/CommentController");
+const CategoryController = require("../controllers/CategoryController");
+const TagController = require("../controllers/TagController");
 
 const router = Router();
 
-router.get('/', getPortfolioItems);
-router.post('/', createPortfolioItem);
-router.put('/edit/:id', editPortfolioItem);
-router.put('/delete/:id', deletePortfolioItem);
+// Portfolio routes
+router.get('/portfolio', portfolioController.getPortfolioItems);
+router.post('/portfolio', portfolioController.createPortfolioItem);
+router.get('/portfolio/:id', portfolioController.getPortfolioItemById);
+router.put('/portfolio/:id', portfolioController.editPortfolioItem);
+router.put('/portfolio/delete/:id', portfolioController.deletePortfolioItem);
 
+
+// Photo routes
 router.get('/photo', getPhoto);
 router.post('/upload', createPhoto);
+
+// User routes
+router.get('/users', userController.getAllUsers);
+router.post('/users', userController.createUser);
+router.get('/users/:id', userController.getUserById);
+router.put('/users/:id', userController.updateUserById);
+router.delete('/users/:id', userController.deleteUserById);
+
+// Post routes
+router.get('/posts', PostController.getAllPosts);
+router.post('/posts', PostController.createPost);
+router.get('/posts/:id', PostController.getPostById);
+router.put('/posts/:id', PostController.updatePostById);
+router.delete('/posts/:id', PostController.deletePostById);
+
+// Comment routes
+router.get('/comments', CommentController.getAllComments);
+router.post('/comments', CommentController.createComment);
+router.get('/comments/:id', CommentController.getCommentById);
+router.put('/comments/:id', CommentController.updateCommentById);
+router.delete('/comments/:id', CommentController.deleteCommentById);
+
+// Category routes
+router.get('/categories', CategoryController.getAllCategories);
+router.post('/categories', CategoryController.createCategory);
+router.get('/categories/:id', CategoryController.getCategoryById);
+router.put('/categories/:id', CategoryController.updateCategoryById);
+router.delete('/categories/:id', CategoryController.deleteCategoryById);
+
+// Tag routes
+router.get('/tags', TagController.getAllTags);
+router.post('/tags', TagController.createTag);
+router.get('/tags/:id', TagController.getTagById);
+router.put('/tags/:id', TagController.updateTagById);
+router.delete('/tags/:id', TagController.deleteTagById);
 
 module.exports = router;

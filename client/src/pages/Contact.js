@@ -1,9 +1,9 @@
 import React from 'react';
+import UserComponent from '../Functions/UserComponent';
 
 const Contact = () => (
     <main>
-        <h2>Contact Me</h2>
-        <p>This is the contact page.</p>
+        <UserComponent />
     </main>
 );
 
