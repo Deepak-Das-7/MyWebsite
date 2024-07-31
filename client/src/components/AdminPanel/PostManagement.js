@@ -4,7 +4,10 @@ import DataManagement from '../DataManagement';
 const PostManagement = () => {
     const postFields = [
         { name: 'title', label: 'Title', type: 'text', placeholder: 'Enter title', required: true },
-        { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Enter description', required: true },
+        { name: 'content', label: 'Content', type: 'textarea', placeholder: 'Enter content', required: true },
+        { name: 'author', label: 'Author', type: 'text', placeholder: 'Enter author', required: true },
+        { name: 'image', label: 'Image', type: 'image', placeholder: 'Enter image', required: true },
+        // { name: 'tags', label: 'Tags', type: 'text', placeholder: 'Enter tags', required: false },
         // Add other fields as needed
     ];
 
@@ -13,13 +16,13 @@ const PostManagement = () => {
             apiUrl={`${process.env.REACT_APP_API_URL}/posts`}
             columns={[
                 { key: 'title', label: 'Title' },
-                { key: 'description', label: 'Description' },
-                { key: 'createdAt', label: 'Created At' },
-                // Add other columns as needed
+                { key: 'content', label: 'Content' },
+                { key: 'author', label: 'Author' },
+                // { key: 'image', label: 'Image' },
+                // { key: 'tags', label: 'Tags' },
             ]}
             formFields={postFields}
         />
-
     );
 };
 

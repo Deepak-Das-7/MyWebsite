@@ -5,7 +5,7 @@ const userFields = [
     { name: 'username', label: 'Username', type: 'text', placeholder: 'Enter username', required: true },
     { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter email', required: true },
     { name: 'password', label: 'Password', type: 'text', placeholder: 'Enter password', required: true },
-    { name: 'profilePicture', label: 'ProfilePicture', type: 'text', placeholder: 'Enter profilePicture', required: true },
+    { name: 'image', label: 'ProfilePicture', type: 'image', placeholder: 'Enter profilePicture', required: true },
     { name: 'bio', label: 'Bio', type: 'text', placeholder: 'Enter text', required: true },
     // Add other fields as needed
 ];

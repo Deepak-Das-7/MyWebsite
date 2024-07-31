@@ -15,7 +15,7 @@ const CardComponent = ({ item }) => {
             <Card.Body className="d-flex flex-column">
                 <Card.Title>{item.title}</Card.Title>
                 <Card.Text className="text-truncate">
-                    {item.description}
+                    {item.content}
                 </Card.Text>
             </Card.Body>
         </Card>

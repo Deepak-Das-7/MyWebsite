@@ -14,7 +14,7 @@ exports.createCategory = async (req, res) => {
 // Get all categories
 exports.getAllCategories = async (req, res) => {
     try {
-        const categories = await Category.find();
+        const categories = await Category.find({ is_deleted: false }).sort({ createdAt: -1 });
         res.status(200).json(categories);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -24,8 +24,8 @@ exports.getAllCategories = async (req, res) => {
 // Get a category by ID
 exports.getCategoryById = async (req, res) => {
     try {
-        const category = await Category.findById(req.params.id);
-        if (!category) return res.status(404).json({ error: 'Category not found' });
+        const category = await Category.findOne({ _id: req.params.id, is_deleted: false });
+        if (!category) return res.status(404).json({ error: 'Category not found or has been deleted' });
         res.status(200).json(category);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -43,13 +43,17 @@ exports.updateCategoryById = async (req, res) => {
     }
 };
 
-// Delete a category by ID
 exports.deleteCategoryById = async (req, res) => {
     try {
-        const category = await Category.findByIdAndDelete(req.params.id);
+        const category = await Category.findByIdAndUpdate(
+            req.params.id,
+            { is_deleted: true },
+            { new: true } // Return the updated document
+        );
         if (!category) return res.status(404).json({ error: 'Category not found' });
-        res.status(200).json({ message: 'Category deleted successfully' });
+        res.status(200).json({ message: 'Category marked as deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
+

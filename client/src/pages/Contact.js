@@ -1,9 +1,12 @@
 import React from 'react';
-import UserComponent from '../Functions/UserComponent';
 
 const Contact = () => (
     <main>
-        <UserComponent />
+        <div>
+            <p>
+                Hello
+            </p>
+        </div>
     </main>
 );
 

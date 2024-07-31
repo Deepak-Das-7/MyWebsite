@@ -24,7 +24,7 @@ exports.createUser = async (req, res) => {
 // Get all users
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.find();
+        const users = await User.find({ is_deleted: false }).sort({ createdAt: -1 });
         res.status(200).json(users);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -34,8 +34,8 @@ exports.getAllUsers = async (req, res) => {
 // Get a user by ID
 exports.getUserById = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id);
-        if (!user) return res.status(404).json({ error: 'User not found' });
+        const user = await User.findOne({ _id: req.params.id, is_deleted: false });
+        if (!user) return res.status(404).json({ error: 'User not found or has been deleted' });
         res.status(200).json(user);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -56,10 +56,15 @@ exports.updateUserById = async (req, res) => {
 // Delete a user by ID
 exports.deleteUserById = async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.params.id);
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            { is_deleted: true },
+            { new: true } // Return the updated document
+        );
         if (!user) return res.status(404).json({ error: 'User not found' });
-        res.status(200).json({ message: 'User deleted successfully' });
+        res.status(200).json({ message: 'User marked as deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
+

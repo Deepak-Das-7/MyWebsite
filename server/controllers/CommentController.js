@@ -14,7 +14,7 @@ exports.createComment = async (req, res) => {
 // Get all comments
 exports.getAllComments = async (req, res) => {
     try {
-        const comments = await Comment.find().populate('author').populate('post');
+        const comments = await Comment.find({ is_deleted: false }).sort({ createdAt: -1 }).populate('author').populate('post');
         res.status(200).json(comments);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -24,8 +24,8 @@ exports.getAllComments = async (req, res) => {
 // Get a comment by ID
 exports.getCommentById = async (req, res) => {
     try {
-        const comment = await Comment.findById(req.params.id).populate('author').populate('post');
-        if (!comment) return res.status(404).json({ error: 'Comment not found' });
+        const comment = await Comment.findOne({ _id: req.params.id, is_deleted: false }).populate('author').populate('post');
+        if (!comment) return res.status(404).json({ error: 'Comment not found or has been deleted' });
         res.status(200).json(comment);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -46,10 +46,15 @@ exports.updateCommentById = async (req, res) => {
 // Delete a comment by ID
 exports.deleteCommentById = async (req, res) => {
     try {
-        const comment = await Comment.findByIdAndDelete(req.params.id);
+        const comment = await Comment.findByIdAndUpdate(
+            req.params.id,
+            { is_deleted: true },
+            { new: true } // Return the updated document
+        );
         if (!comment) return res.status(404).json({ error: 'Comment not found' });
-        res.status(200).json({ message: 'Comment deleted successfully' });
+        res.status(200).json({ message: 'Comment marked as deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
+

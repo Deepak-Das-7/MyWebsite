@@ -15,7 +15,7 @@ const CardComponent = ({ card, onEdit, onDelete }) => {
             <Card.Body className="d-flex flex-column">
                 <Card.Title>{card.title}</Card.Title>
                 <Card.Text className="text-truncate">
-                    {card.description}
+                    {card.content}
                 </Card.Text>
                 <div className="mt-auto d-flex justify-content-between">
                     <Button variant="secondary" onClick={() => onEdit(card)}>

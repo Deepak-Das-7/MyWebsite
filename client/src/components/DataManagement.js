@@ -9,6 +9,7 @@ const DataManagement = ({ apiUrl, columns, formFields }) => {
     const [editingItem, setEditingItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [showTable, setShowTable] = useState(false); // State variable for table visibility
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,8 +23,11 @@ const DataManagement = ({ apiUrl, columns, formFields }) => {
                 setLoading(false);
             }
         };
-        fetchData();
-    }, [apiUrl]);
+        if (showTable) {
+            fetchData();
+        }
+        // console.log(data);
+    }, [apiUrl, showTable]);
 
     const handleAddOrEdit = async (item) => {
         setLoading(true);
@@ -60,7 +64,6 @@ const DataManagement = ({ apiUrl, columns, formFields }) => {
         }
     };
 
-
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this item?')) {
             setLoading(true);
@@ -85,13 +88,17 @@ const DataManagement = ({ apiUrl, columns, formFields }) => {
         setIsModalOpen(true);
     };
 
+    const toggleTableVisibility = () => {
+        setShowTable(prevShowTable => !prevShowTable);
+    };
+
     return (
         <div>
             <Container>
                 <Row>
                     <Col xs={12} className="d-flex justify-content-end mb-3">
                         <Button
-                            onClick={openModalForAdd}
+                            onClick={toggleTableVisibility}
                             className="btn btn-primary"
                             style={{
                                 backgroundColor: '#007bff',
@@ -100,15 +107,27 @@ const DataManagement = ({ apiUrl, columns, formFields }) => {
                                 borderRadius: '4px',
                             }}
                         >
+                            {showTable ? 'Hide Table' : 'Show Table'}
+                        </Button>
+                        <Button
+                            onClick={openModalForAdd}
+                            className="btn btn-primary ms-2"
+                            style={{
+                                backgroundColor: '#02b416',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '4px',
+                            }}
+                        >
                             Add New Item
                         </Button>
                     </Col>
-                    {loading ? (
+                    {loading && showTable ? (
                         <Col xs={12} className="text-center">
                             <Spinner animation="border" />
                             <p>Loading...</p>
                         </Col>
-                    ) : data.length > 0 ? (
+                    ) : showTable && data.length > 0 ? (
                         <Col xs={12}>
                             <DataTable
                                 data={data}
@@ -117,11 +136,11 @@ const DataManagement = ({ apiUrl, columns, formFields }) => {
                                 onDelete={handleDelete}
                             />
                         </Col>
-                    ) : (
+                    ) : showTable && data.length === 0 ? (
                         <Col xs={12}>
                             <p>No items available.</p>
                         </Col>
-                    )}
+                    ) : null}
                 </Row>
             </Container>
             <EntityForm

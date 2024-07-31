@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import imageCompression from 'browser-image-compression';
 
 const ImageUploader = ({ onUpload }) => {
@@ -41,16 +40,9 @@ const ImageUploader = ({ onUpload }) => {
     reader.readAsDataURL(selectedImage);
     reader.onloadend = async () => {
       const base64String = reader.result;
+      // console.log("Image URL received:", base64String); // Debug line
 
-      try {
-        const response = await axios.post(`${process.env.REACT_APP_API_URL}/upload`, { image: base64String });
-        const imageUrl = response.data.image; // Ensure this matches your backend response
-        // console.log("Image URL received:", imageUrl); // Debug line
-
-        if (onUpload) onUpload(imageUrl); // Pass the image URL
-      } catch (error) {
-        console.error('Upload error', error);
-      }
+      if (onUpload) onUpload(base64String);
     };
 
     reader.onerror = (error) => {
