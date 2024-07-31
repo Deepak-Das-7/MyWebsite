@@ -17,7 +17,7 @@ const PostManagement = () => {
             columns={[
                 { key: 'title', label: 'Title' },
                 { key: 'content', label: 'Content' },
-                { key: 'author', label: 'Author' },
+                { key: 'author', label: 'Author 66a8c2e731962897ac72e80b' },
                 // { key: 'image', label: 'Image' },
                 // { key: 'tags', label: 'Tags' },
             ]}
