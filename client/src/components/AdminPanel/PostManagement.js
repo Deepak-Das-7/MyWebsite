@@ -5,7 +5,7 @@ const PostManagement = () => {
     const postFields = [
         { name: 'title', label: 'Title', type: 'text', placeholder: 'Enter title', required: true },
         { name: 'content', label: 'Content', type: 'textarea', placeholder: 'Enter content', required: true },
-        { name: 'author', label: 'Author', type: 'text', placeholder: 'Enter author', required: true },
+        { name: 'author', label: 'Author 66a8c2e731962897ac72e80b', type: 'text', placeholder: 'Enter author', required: true },
         { name: 'image', label: 'Image', type: 'image', placeholder: 'Enter image', required: true },
         // { name: 'tags', label: 'Tags', type: 'text', placeholder: 'Enter tags', required: false },
         // Add other fields as needed
@@ -17,7 +17,7 @@ const PostManagement = () => {
             columns={[
                 { key: 'title', label: 'Title' },
                 { key: 'content', label: 'Content' },
-                { key: 'author', label: 'Author 66a8c2e731962897ac72e80b' },
+                { key: 'author', label: 'Author' },
                 // { key: 'image', label: 'Image' },
                 // { key: 'tags', label: 'Tags' },
             ]}
