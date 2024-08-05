@@ -5,6 +5,7 @@ import CardComponent from '../components/Card/Card2';
 import { Container, Row, Col, Spinner } from 'react-bootstrap'; // Import Spinner component
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import NavbarComponent from '../components/Navbar/Nav';
 
 const Contact = () => {
     const [cards, setCards] = useState([]);
@@ -65,6 +66,7 @@ const Contact = () => {
 
     return (
         <div>
+            <NavbarComponent />
             <button
                 onClick={openModalForAdd}
                 className="position-fixed btn btn-primary"

@@ -6,10 +6,15 @@ const DataTable = ({ data, columns, onEdit, onDelete }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const rowsPerPage = 5;
 
+    // Helper function to get nested values
+    const getNestedValue = (obj, path) => {
+        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+    };
+
     // Filter data based on search query
     const filteredData = data.filter(item => {
         return columns.some(col => {
-            const value = item[col.key];
+            const value = getNestedValue(item, col.key);
             return typeof value === 'string' && value.toLowerCase().includes(searchQuery.toLowerCase());
         });
     });
@@ -72,11 +77,11 @@ const DataTable = ({ data, columns, onEdit, onDelete }) => {
                             <tr key={item._id}>
                                 {columns.map(col => (
                                     <td key={col.key} style={{ paddingLeft: '0.3rem', fontSize: 13, minWidth: "7rem" }}>
-                                        {typeof item[col.key] === 'string'
-                                            ? highlightText(item[col.key])
-                                            : typeof item[col.key] === 'object' && item[col.key] !== null
-                                                ? item[col.key].username
-                                                : item[col.key]}
+                                        {typeof getNestedValue(item, col.key) === 'string'
+                                            ? highlightText(getNestedValue(item, col.key))
+                                            : typeof getNestedValue(item, col.key) === 'object' && getNestedValue(item, col.key) !== null
+                                                ? getNestedValue(item, col.key).username // Customize this line based on your nested object structure
+                                                : getNestedValue(item, col.key)}
                                     </td>
                                 ))}
                                 <td style={{ width: "8rem" }}>

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Spinner } from 'react-bootstrap';
-import ImageUploader from '../ImageUploader/ImageUploader'; // Import your ImageUploader component
+import ImageUploader from '../ImageUploader/ImageUploader';
+import axios from 'axios';
 
 const EntityForm = ({ isOpen, onClose, onSave, itemData, fields = [] }) => {
     const [formData, setFormData] = useState({});
     const [loading, setLoading] = useState(false);
     const [uploadedImageUrl, setUploadedImageUrl] = useState('');
     const [validated, setValidated] = useState(false);
+    const [dropdownOptions, setDropdownOptions] = useState({});
 
     useEffect(() => {
         if (itemData) {
@@ -19,6 +21,21 @@ const EntityForm = ({ isOpen, onClose, onSave, itemData, fields = [] }) => {
             setUploadedImageUrl('');
         }
     }, [itemData]);
+
+    useEffect(() => {
+        const fetchDropdownOptions = async () => {
+            const options = {};
+            for (const field of fields) {
+                if (field.type === 'object' && field.isArray) {
+                    const response = await axios.get(field.apiEndpoint);
+                    options[field.name] = response.data;
+                }
+            }
+            setDropdownOptions(options);
+        };
+
+        fetchDropdownOptions();
+    }, [fields]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -39,12 +56,14 @@ const EntityForm = ({ isOpen, onClose, onSave, itemData, fields = [] }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setValidated(true);
-        if (formData.image) { // Ensure the image field is not empty
+        const imageField = fields.find(field => field.type === 'image');
+        if (imageField && !formData.image) {
+            console.log('Image is required'); // Handle the error as needed
+        } else {
             setLoading(true);
             await onSave(formData);
             setLoading(false);
-        } else {
-            console.log('Image is required'); // Handle the error as needed
+            onClose();
         }
     };
 
@@ -83,6 +102,22 @@ const EntityForm = ({ isOpen, onClose, onSave, itemData, fields = [] }) => {
                                         </Form.Text>
                                     )}
                                 </>
+                            ) : field.type === 'object' && field.isArray ? (
+                                <Form.Control
+                                    as="select"
+                                    name={field.name}
+                                    value={formData[field.name] || ''}
+                                    onChange={handleChange}
+                                    required={field.required || false}
+                                    disabled={loading}
+                                >
+                                    <option value="">Select {field.label}</option>
+                                    {dropdownOptions[field.name] && dropdownOptions[field.name].map(option => (
+                                        <option key={option._id} value={option._id}>
+                                            {option.name}
+                                        </option>
+                                    ))}
+                                </Form.Control>
                             ) : (
                                 <Form.Control
                                     type={field.type || 'text'}

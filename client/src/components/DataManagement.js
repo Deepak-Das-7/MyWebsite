@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Row, Col, Spinner, Button } from 'react-bootstrap';
-import DataTable from './AdminPanel/DataTable';
-import EntityForm from './AdminPanel/EntityForm';
+import DataTable from './Common/DataTable';
+import EntityForm from './Common/EntityForm';
 
 const DataManagement = ({ apiUrl, columns, formFields }) => {
     const [data, setData] = useState([]);

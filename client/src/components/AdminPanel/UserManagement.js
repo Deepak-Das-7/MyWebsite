@@ -2,22 +2,24 @@ import React from 'react';
 import DataManagement from '../DataManagement';
 
 const userFields = [
-    { name: 'username', label: 'Username', type: 'text', placeholder: 'Enter username', required: true },
+    { name: 'firstName', label: 'First Name', type: 'text', placeholder: 'Enter first name', required: true },
+    { name: 'lastName', label: 'Last Name', type: 'text', placeholder: 'Enter last name', required: true },
     { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter email', required: true },
-    { name: 'password', label: 'Password', type: 'text', placeholder: 'Enter password', required: true },
-    { name: 'image', label: 'ProfilePicture', type: 'image', placeholder: 'Enter profilePicture', required: true },
-    { name: 'bio', label: 'Bio', type: 'text', placeholder: 'Enter text', required: true },
-    // Add other fields as needed
+    { name: 'password', label: 'Password', type: 'password', placeholder: 'Enter password', required: true },
+    { name: 'dateOfBirth', label: 'Date of Birth', type: 'date', placeholder: 'Enter date of birth', required: false },
+    { name: 'class', label: 'Class', type: 'text', placeholder: 'Enter class ID', required: false },
+    { name: 'enrollments', label: 'Enrollments', type: 'text', placeholder: 'Enter enrollment IDs', required: false, multiple: true }
 ];
+
 
 const UserManagement = () => {
     return (
         <DataManagement
-            apiUrl={`${process.env.REACT_APP_API_URL}/users`}
+            apiUrl={`${process.env.REACT_APP_API_URL}/students`}
             columns={[
-                { key: 'username', label: 'Username' },
+                { key: 'firstName', label: 'FirstName' },
                 { key: 'email', label: 'Email' },
-                { key: 'password', label: 'Password' },
+                { key: 'class', label: 'Class' },
                 // Add other columns as needed
             ]}
             formFields={userFields}
