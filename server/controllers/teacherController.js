@@ -1,4 +1,5 @@
 const Teacher = require('../models/Teacher');
+const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
@@ -27,8 +28,16 @@ exports.createTeacher = async (req, res) => {
             password: hashedPassword,
             subjects
         });
+        const user = new User({
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            userType: "Teacher"
+        });
 
         await teacher.save();
+        await user.save();
         res.status(201).json({ message: 'Teacher registered successfully' });
     } catch (error) {
         res.status(400).json({ error: error.message });

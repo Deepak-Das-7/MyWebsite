@@ -32,16 +32,55 @@ exports.getCourseById = async (req, res) => {
         if (!course) {
             return res.status(404).send();
         }
+        console.log("Courses found in ID:", course);
+
         res.status(200).send(course);
     } catch (error) {
         res.status(500).send(error);
     }
 };
 
+
+
 // Update a course by ID
-exports.updateCourse = async (req, res) => {
+exports.updateCourseByID = async (req, res) => {
     try {
         const course = await Course.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        if (!course) {
+            return res.status(404).send();
+        }
+        res.status(200).send(course);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+};
+
+// Get a course by UserID
+exports.getCourseByUserId = async (req, res) => {
+    try {
+        const courses = await Course.find({ students: req.params.id }).populate({
+            path: 'students',
+            select: 'firstName lastName'
+        });
+
+        // console.log("Courses found:", courses);
+
+        if (!courses || courses.length === 0) {
+            console.log("No courses found for this user.");
+            return res.status(404).send({ message: 'No courses found for this user.' });
+        }
+        res.status(200).send(courses);
+    } catch (error) {
+        console.error("Error fetching courses:", error);
+        res.status(500).send(error);
+    }
+};
+
+//Update course by UserId
+exports.updateCourseByUserId = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const course = await Course.findByIdAndUpdate({ students: userId }, req.body, { new: true, runValidators: true });
         if (!course) {
             return res.status(404).send();
         }

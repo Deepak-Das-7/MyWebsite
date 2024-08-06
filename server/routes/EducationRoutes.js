@@ -17,7 +17,9 @@ const attendanceController = require('../controllers/attendanceController');
 router.post('/courses', courseController.createCourse);
 router.get('/courses', courseController.getCourses);
 router.get('/courses/:id', courseController.getCourseById);
-router.put('/courses/:id', courseController.updateCourse);
+router.put('/courses/:id', courseController.updateCourseByID);
+router.get('/coursesOfUser/:id', courseController.getCourseByUserId);
+router.put('/coursesOfUser/:id', courseController.updateCourseByUserId);
 router.delete('/courses/:id', courseController.deleteCourse);
 
 // Student routes

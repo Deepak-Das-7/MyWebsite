@@ -24,11 +24,10 @@ const LoginPage = () => {
                 response = await axios.post(`${apiUrl}/students/login`, formData);
             }
             login(response.data.token);
-            alert('Login successful!');
-            navigate('/testing');
+            navigate('/dashboard');
         } catch (error) {
             console.error('Error logging in:', error);
-            alert('There was an error logging in.');
+            alert(error.message);
         }
     };
 
@@ -42,9 +41,10 @@ const LoginPage = () => {
             }
             console.log(response.data);
             alert('Registration successful!');
+            setIsSignup(false);
         } catch (error) {
             console.error('Error Registration in:', error);
-            alert('There was an error Registration in.');
+            alert(error.message);
         }
     };
 

@@ -4,10 +4,9 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthContext';
 
-
 const NavbarComponent = () => {
     const navigate = useNavigate();
-    const { logout } = useContext(AuthContext);
+    const { logout, userDetails } = useContext(AuthContext);
 
     const handleLogout = () => {
         const confirmLogout = window.confirm("Are you sure you want to log out?");
@@ -18,9 +17,9 @@ const NavbarComponent = () => {
     };
 
     return (
-        <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm" style={{ padding: '0 5%' }}>
-            <Navbar.Brand href="/" className="font-weight-bold" style={{ fontSize: '2rem', color: '#baf8b2', marginRight: "5rem" }}>
-                Dashboard
+        <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm" style={{ padding: '0 1%' }}>
+            <Navbar.Brand href="/" className="font-weight-bold" style={{ fontSize: '2rem', color: '#baf8b2', marginRight: "3rem" }}>
+                {userDetails ? `Hey, ${userDetails.firstName}` : 'Dashboard'}
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">

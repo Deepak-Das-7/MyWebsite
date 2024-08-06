@@ -11,7 +11,37 @@ const EntityForm = ({ isOpen, onClose, onSave, itemData, fields = [] }) => {
     const [dropdownOptions, setDropdownOptions] = useState({});
 
     useEffect(() => {
+        if (isOpen) {
+            const fetchDropdownOptions = async () => {
+                const options = {};
+                console.log('Fields for dropdowns:', fields);
+
+                for (const field of fields) {
+                    if (field.type === 'object') {
+                        const apiUrl = `${process.env.REACT_APP_API_URL}/${field.name}`;
+                        console.log(`Fetching data from: ${apiUrl}`);
+
+                        try {
+                            const response = await axios.get(apiUrl);
+                            console.log(`Response data for ${field.name}:`, response.data);
+                            options[field.name] = response.data;
+                        } catch (error) {
+                            console.error(`Failed to fetch options for ${field.name}:`, error);
+                        }
+                    }
+                }
+
+                console.log('Fetched dropdown options:', options);
+                setDropdownOptions(options);
+            };
+
+            fetchDropdownOptions();
+        }
+    }, [isOpen, fields]);
+
+    useEffect(() => {
         if (itemData) {
+            console.log('Item data received:', itemData);
             setFormData(itemData);
             if (itemData.image) {
                 setUploadedImageUrl(itemData.image);
@@ -22,23 +52,9 @@ const EntityForm = ({ isOpen, onClose, onSave, itemData, fields = [] }) => {
         }
     }, [itemData]);
 
-    useEffect(() => {
-        const fetchDropdownOptions = async () => {
-            const options = {};
-            for (const field of fields) {
-                if (field.type === 'object' && field.isArray) {
-                    const response = await axios.get(field.apiEndpoint);
-                    options[field.name] = response.data;
-                }
-            }
-            setDropdownOptions(options);
-        };
-
-        fetchDropdownOptions();
-    }, [fields]);
-
     const handleChange = (e) => {
         const { name, value } = e.target;
+        console.log('Field changed:', name, value);
         setFormData(prevData => ({
             ...prevData,
             [name]: value
@@ -46,6 +62,7 @@ const EntityForm = ({ isOpen, onClose, onSave, itemData, fields = [] }) => {
     };
 
     const handleImageUpload = (base64Image) => {
+        console.log('Image uploaded:', base64Image);
         setFormData(prevData => ({
             ...prevData,
             image: base64Image
@@ -56,6 +73,7 @@ const EntityForm = ({ isOpen, onClose, onSave, itemData, fields = [] }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setValidated(true);
+        console.log('Form data on submit:', formData);
         const imageField = fields.find(field => field.type === 'image');
         if (imageField && !formData.image) {
             console.log('Image is required'); // Handle the error as needed
@@ -114,7 +132,7 @@ const EntityForm = ({ isOpen, onClose, onSave, itemData, fields = [] }) => {
                                     <option value="">Select {field.label}</option>
                                     {dropdownOptions[field.name] && dropdownOptions[field.name].map(option => (
                                         <option key={option._id} value={option._id}>
-                                            {option.name}
+                                            {option.firstName}
                                         </option>
                                     ))}
                                 </Form.Control>

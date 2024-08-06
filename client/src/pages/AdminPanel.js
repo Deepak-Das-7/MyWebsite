@@ -1,5 +1,6 @@
 import React from 'react';
 import UserManagement from '../components/AdminPanel/UserManagement';
+import CourseManagement from '../components/AdminPanel/CourseManage';
 import ClassManage from '../components/AdminPanel/ClassManage';
 import AssignmentManage from '../components/AdminPanel/AssignmentManage';
 import NavbarComponent from '../components/Navbar/Nav';
@@ -25,14 +26,20 @@ const Admin = () => {
                         </tr>
                         <tr>
                             <td>
-                                <div>Post Management</div>
+                                <div>Class Management</div>
                                 <ClassManage />
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <div>Tag Management</div>
+                                <div>Assignment Management</div>
                                 <AssignmentManage />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div>Course Management</div>
+                                <CourseManagement />
                             </td>
                         </tr>
                     </tbody>

@@ -16,7 +16,7 @@ const Testing = () => {
     return (
         <div>
             <NavbarComponent />
-            <h1>Welcome, {userDetails.firstName || 'User'}</h1>
+            {/* <h1>Welcome, {userDetails.firstName || 'User'}</h1> */}
             <p>Email: {userDetails.email || 'Not Available'}</p>
             <p>Last Name: {userDetails.lastName || 'Not Available'}</p>
             <p>ID: {userDetails.id || 'Not Available'}</p>

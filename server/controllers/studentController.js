@@ -1,3 +1,4 @@
+const User = require('../models/User');
 const Student = require('../models/Student');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -30,7 +31,16 @@ exports.createStudent = async (req, res) => {
             enrollments: enrollmentsId
         });
 
+        const user = new User({
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            userType: "Student"
+        });
+
         await student.save();
+        await user.save();
         res.status(201).json({ message: 'Student registered successfully' });
     } catch (error) {
         res.status(400).json({ error: error.message });
