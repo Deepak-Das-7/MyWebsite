@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
-import { useSession } from '../../userContext'
 import TeacherLoginForm from './TeacherLoginForm';
 import StudentLoginForm from './StudentLoginForm';
 import TeacherSignupForm from './TeacherSignupForm';
 import StudentSignupForm from './StudentSignupForm';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../Context/AuthContext';
 
 const LoginPage = () => {
     const [isSignup, setIsSignup] = useState(false);
     const [userType, setUserType] = useState('student');
     const [apiUrl] = useState(process.env.REACT_APP_API_URL);
-    const { setUserId } = useSession();
     const navigate = useNavigate();
+    const { login } = useContext(AuthContext);
 
     const handleLogin = async (formData) => {
         try {
             let response;
             if (userType === 'teacher') {
-                response = await axios.post(`${apiUrl}/teachers`, formData);
+                response = await axios.post(`${apiUrl}/teachers/login`, formData);
             } else {
                 response = await axios.post(`${apiUrl}/students/login`, formData);
             }
-            setUserId(response.data.userId)
-            // alert('Login successful!');
-            navigate('/home');
+            login(response.data.token);
+            alert('Login successful!');
+            navigate('/testing');
         } catch (error) {
             console.error('Error logging in:', error);
             alert('There was an error logging in.');

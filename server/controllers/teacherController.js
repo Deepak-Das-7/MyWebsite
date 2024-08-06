@@ -1,37 +1,68 @@
 const Teacher = require('../models/Teacher');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 
-// Create a new teacher
+dotenv.config();
+
+// Create a new teacher (registration)
 exports.createTeacher = async (req, res) => {
-    try {
-        const teacher = new Teacher(req.body);
-        await teacher.save();
-        res.status(201).send(teacher);
-    } catch (error) {
-        res.status(400).send(error);
-    }
-};
-//login
-exports.loginTeacher = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const teacher = await Teacher.findOne({ email });
+    const { firstName, lastName, email, password, subjects } = req.body;
 
-        if (!teacher) {
-            return res.status(404).send({ message: 'teacher not found' });
+    try {
+        // Check if the teacher already exists
+        const existingTeacher = await Teacher.findOne({ email });
+        if (existingTeacher) {
+            return res.status(400).json({ message: 'Teacher already exists' });
         }
-        if (password !== teacher.password) {
-            return res.status(400).send({ message: 'Invalid password' });
-        }
-        teacher.lastLogin = Date.now();
-        await teacher.save();
 
-        res.status(200).send({
-            message: 'Login successful',
-            userId: teacher
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create a new teacher
+        const teacher = new Teacher({
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            subjects
         });
 
+        await teacher.save();
+        res.status(201).json({ message: 'Teacher registered successfully' });
     } catch (error) {
-        res.status(500).send({ message: 'Server error', error });
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// Login teacher
+exports.loginTeacher = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // Find the teacher by email
+        const teacher = await Teacher.findOne({ email });
+        if (!teacher) {
+            return res.status(404).json({ message: 'Teacher not found' });
+        }
+
+        // Compare the provided password with the stored password
+        const isMatch = await bcrypt.compare(password, teacher.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        // Update the last login date
+        teacher.lastLogin = Date.now();
+        await teacher.save(); // Save the updated teacher record
+
+        // Generate a token
+        const token = jwt.sign({ id: teacher._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        // Send success response with token
+        res.status(200).json({ token, teacherId: teacher._id });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
     }
 };
 
@@ -76,7 +107,7 @@ exports.updateTeacher = async (req, res) => {
     }
 };
 
-// Delete a teacher by ID
+// Delete a teacher by ID (soft delete)
 exports.deleteTeacher = async (req, res) => {
     try {
         const teacher = await Teacher.findByIdAndUpdate(
@@ -85,7 +116,7 @@ exports.deleteTeacher = async (req, res) => {
             { new: true } // Return the updated document
         );
         if (!teacher) {
-            return res.status(404).json({ error: 'teacher not found' });
+            return res.status(404).json({ error: 'Teacher not found' });
         }
         res.status(200).send(teacher);
     } catch (error) {

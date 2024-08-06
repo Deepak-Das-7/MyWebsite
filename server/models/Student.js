@@ -10,6 +10,9 @@ const studentSchema = new mongoose.Schema({
     lastLogin: Date,
     class: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' },
     enrollments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Enrollment' }]
+}, {
+    timestamps: true // adds createdAt and updatedAt fields
 });
+
 
 module.exports = mongoose.model('Student', studentSchema);

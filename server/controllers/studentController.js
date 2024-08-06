@@ -1,49 +1,80 @@
 const Student = require('../models/Student');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 
-// Create a new student
+dotenv.config();
+
+// Create a new student (registration)
 exports.createStudent = async (req, res) => {
+    const { firstName, lastName, email, password, dateOfBirth, class: classId, enrollments: enrollmentsId } = req.body;
+
     try {
-        const student = new Student(req.body);
-        // console.log("YE TO GLT HAI RE =====", req.body);
-        await student.save();
-        res.status(201).send(student);
-    } catch (error) {
-        res.status(400).send(error);
-    }
-};
-//login
-
-exports.loginStudent = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        // Find the student by email
-        const student = await Student.findOne({ email });
-
-        // Check if student exists
-        if (!student) {
-            return res.status(404).send({ message: 'Student not found' });
+        // Check if the student already exists
+        const existingStudent = await Student.findOne({ email });
+        if (existingStudent) {
+            return res.status(400).json({ message: 'Student already exists' });
         }
 
-        // Compare the provided password with the stored password
-        if (password !== student.password) {
-            return res.status(400).send({ message: 'Invalid password' });
-        }
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Update the last login date
-        student.lastLogin = Date.now();
-        await student.save(); // Save the updated student record
-
-        // Send success response
-        res.status(200).send({
-            message: 'Login successful',
-            userId: student
+        // Create a new student
+        const student = new Student({
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            dateOfBirth,
+            class: classId,
+            enrollments: enrollmentsId
         });
 
+        await student.save();
+        res.status(201).json({ message: 'Student registered successfully' });
     } catch (error) {
-        res.status(500).send({ message: 'Server error', error });
+        res.status(400).json({ error: error.message });
     }
-};;
+};
+
+// Login student
+exports.loginStudent = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const student = await Student.findOne({ email });
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        const isMatch = await bcrypt.compare(password, student.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        student.lastLogin = Date.now();
+        await student.save();
+
+        // Generate a token
+        const token = jwt.sign(
+            {
+                id: student._id,
+                firstName: student.firstName,
+                email: student.email,
+                lastName: student.lastName
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+
+        // Send success response with token
+        res.status(200).json({ token, studentId: student._id });
+    } catch (error) {
+        console.error('Server error:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
 
 // Get all students
 exports.getStudents = async (req, res) => {
@@ -94,7 +125,7 @@ exports.updateStudent = async (req, res) => {
     }
 };
 
-// Delete a student by ID
+// Delete a student by ID (soft delete)
 exports.deleteStudent = async (req, res) => {
     try {
         const student = await Student.findByIdAndUpdate(
@@ -103,7 +134,7 @@ exports.deleteStudent = async (req, res) => {
             { new: true } // Return the updated document
         );
         if (!student) {
-            return res.status(404).json({ error: 'student not found' });
+            return res.status(404).json({ error: 'Student not found' });
         }
         res.status(200).send(student);
     } catch (error) {
